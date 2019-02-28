@@ -1,0 +1,16 @@
+
+body {
+    background-color:slategrey;
+}
+
+h1 {
+    color:red;
+}
+
+.navbar {
+    margin-bottom:5rem;
+}
+
+#changedBar {
+    color:blue;
+}
