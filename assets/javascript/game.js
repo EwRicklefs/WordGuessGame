@@ -17,7 +17,7 @@ var listOfWords = ["spotted",
     "curved",
     "private"];
 
-    //generates a random word from the provided list
+//generates a random word from the provided list
 function randWord(inputWordList) {
     var num=Math.floor(Math.random()*(listOfWords.length-1));
     return inputWordList[num];
@@ -37,6 +37,7 @@ var gameState = {
     guessedWord:[]
 }
 
+//generates a new word and 'resets' the values of game state.
 function newWord() {
     gameState.guessesRem=numGuesses;
     gameState.contFlag=true;
@@ -46,6 +47,7 @@ function newWord() {
     gameState.guessedWord.fill('-');
 }
 
+//initial startup and newword runs
 newWord();
 startup();
 
@@ -59,6 +61,7 @@ function startup() {
     document.getElementById("losses").innerHTML=gameState.losses;
 }
 
+//refreshes some UI elements of the game - only updates the correctWord, guesses, gusRem, wins and losses fields
 function refresh() {
     document.getElementById("correctWord").innerHTML=gameState.guessedWord.join('');
     document.getElementById("guesses").innerHTML=gameState.guesses;
@@ -67,6 +70,7 @@ function refresh() {
     document.getElementById("losses").innerHTML=gameState.losses;
 }
 
+//main body of the execution
 function gameBody() {
     document.onkeypress = function(event) {
         if (alphabet.includes(event.key) && !(gameState.guesses.includes(event.key))) {
@@ -122,6 +126,7 @@ function gameBody() {
     }
 }
 
+//call for main execution
 gameBody();
 
 
