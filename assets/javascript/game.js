@@ -10,7 +10,7 @@ var listOfWords = ["spotted",
     "word",
     "wink",
     "vacuous",
-    "fur2",
+    "fur",
     "existence",
     "mind",
     "little",
@@ -23,6 +23,9 @@ function randWord(inputWordList) {
     return inputWordList[num];
 }
 
+
+var alphabet='abcdefghijklmnopqrstuvwxyz'.split('');
+var numGuesses=10;
 //contains the values of the current gamestate
 var gameState = {
     wins:0,
@@ -35,7 +38,7 @@ var gameState = {
 }
 
 function newWord() {
-    gameState.guessesRem=9;
+    gameState.guessesRem=numGuesses;
     gameState.contFlag=true;
     gameState.guesses=[];
     gameState.word=randWord(listOfWords);
@@ -54,7 +57,6 @@ function startup() {
     document.getElementById("gusRem").innerHTML=gameState.guessesRem;
     document.getElementById("wins").innerHTML=gameState.wins;
     document.getElementById("losses").innerHTML=gameState.losses;
-    console.log("word is " + gameState.word)
 }
 
 function refresh() {
@@ -65,51 +67,62 @@ function refresh() {
     document.getElementById("losses").innerHTML=gameState.losses;
 }
 
-
-document.onkeypress = function(event) {
-    if (gameState.contFlag) {
-        var curGuess = event.key;
-        var counter=0;
-        gameState.guesses.push(curGuess);
-        gameState.guessesRem--;
-        refresh();
-        for (var i=0;i<gameState.word.length;i++) {
-            if (curGuess === gameState.word[i]) {
-                gameState.guessedWord[i]=curGuess;
-                counter++;
-            }
-        }
-        if (counter > 0) {
-            document.getElementById("textBar").innerHTML="Correct Guess! Guess Again!"
-        } else {
-            document.getElementById("textBar").innerHTML="Incorrect Guess! Guess Again!"
-        }
-        refresh();
-    
-    //resolves game based off winning or losing
-    if (gameState.guessedWord.join('')===gameState.word) {
-        gameState.wins++;
-        gameState.contFlag=false;
-        document.getElementById('textBar').innerHTML="You win! Click here to play again!";
-        document.getElementById('textBar').id='restartButton';
-        document.getElementById('restartButton').onclick = function() {
-            document.getElementById('restartButton').id='textBar';
-            newWord();
-            startup();
-        }
+function gameBody() {
+    document.onkeypress = function(event) {
+        if (alphabet.includes(event.key) && !(gameState.guesses.includes(event.key))) {
+            if (gameState.contFlag) {
+                var curGuess = event.key;
+                var counter=0;
+                gameState.guesses.push(curGuess);
+                refresh();
+                for (var i=0;i<gameState.word.length;i++) {
+                    if (curGuess === gameState.word[i]) {
+                        gameState.guessedWord[i]=curGuess;
+                        counter++;
+                    }
+                }
+                if (counter > 0) {
+                    document.getElementById("textBar").innerHTML="Correct Guess! Guess Again!";               
+                    gameState.guessesRem--;
+                } else {
+                    document.getElementById("textBar").innerHTML="Incorrect Guess! Guess Again!"; 
+                    gameState.guessesRem--;
+                }
+                refresh();
             
-    } else if (gameState.guessesRem<1){
-        gameState.losses++;
-        document.getElementById('textBar').innerHTML="You lose! Click here to play again!";
-        document.getElementById('textBar').id='restartButton'; 
-        document.getElementById('restartButton').onclick = function() {
-            document.getElementById('restartButton').id='textBar';
-            newWord();
-            startup();
-        }        
+            //resolves game based off winning or losing
+                if (gameState.guessedWord.join('')===gameState.word) {
+                    gameState.wins++;
+                    refresh()
+                    gameState.contFlag=false;
+                    document.getElementById('textBar').innerHTML="You win! Click here to play again!";
+                    document.getElementById('textBar').id='restartButton';
+                    document.getElementById('restartButton').onclick = function() {
+                        document.getElementById('restartButton').id='textBar';
+                        newWord();
+                        startup();
+                    }   
+                } else if (gameState.guessesRem<1){
+                    gameState.losses++;
+                    refresh();
+                    document.getElementById('textBar').innerHTML="You lose! Click here to play again! Word was: " + gameState.word;
+                    document.getElementById('textBar').id='restartButton'; 
+                    document.getElementById('restartButton').onclick = function() {
+                        document.getElementById('restartButton').id='textBar';
+                        newWord();
+                        startup();
+                    }       
+                }
+            }
+        } else if (gameState.guesses.includes(event.key)){
+            document.getElementById("textBar").innerHTML="You have already guessed that character"
+        } else {
+            document.getElementById("textBar").innerHTML="Enter A Valid Character"
+        }
     }
 }
-}
+
+gameBody();
 
 
 
